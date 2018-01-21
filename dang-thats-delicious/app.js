@@ -125,16 +125,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //The extended option allows to choose between parsing the URL-encoded data with the querystring library (when false) or the qs library (when true). 
 //The "extended" syntax allows for rich objects and arrays to be encoded into the URL-encoded format, allowing for a JSON-like experience with URL-encoded. 
-//
 
-// Exposes a bunch of methods for validating data. Used heavily on userController.validateRegister
 app.use(expressValidator());
+//Express-validator is a middleware for Express on Node.js that can help you validate user input. Used heavily on userController.validateRegister.
+//Note that you should insert the new express-validator middleware directly after the json middleware.
 
-// populates req.cookies with any cookies that came along with the request
 app.use(cookieParser());
+// populates req.cookies with any cookies that came along with the request
 
-// Sessions allow us to store data on visitors from request to request
-// This keeps users logged in and allows us to send flash messages
 app.use(session({
   secret: process.env.SECRET,
   key: process.env.KEY,
@@ -142,13 +140,15 @@ app.use(session({
   saveUninitialized: false,
   store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
+// Sessions allow us to store data on visitors from request to request
+// This keeps users logged in and allows us to send flash messages
 
-// // Passport JS is what we use to handle our logins
 app.use(passport.initialize());
 app.use(passport.session());
+//Passport JS is what we use to handle our logins
 
-// // The flash middleware let's us use req.flash('error', 'Shit!'), which will then pass that message to the next page the user requests
 app.use(flash());
+//The flash middleware let's us use req.flash('error', 'Shit!'), which will then pass that message to the next page the user requests
 
 // pass variables to our templates + all requests
 app.use((req, res, next) => {
